@@ -24,6 +24,7 @@ jobs:
         github_token: ${{ github.token }}
         workflow: "Checkout-Build-Artifact"
         name: VeraDemoDotNetCoreAppArtifact.zip
+      continue-on-error: true
     
     - name: scan
       run: |
