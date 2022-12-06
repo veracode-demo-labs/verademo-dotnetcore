@@ -14,7 +14,6 @@ jobs:
       image: veracode/api-wrapper-java:latest
       options: --user root
     steps:
-    - uses: actions/checkout@v3
         
 # Security Scan Mainline Branch / SAST and SCA Sanbox Scan
 
@@ -22,7 +21,7 @@ jobs:
       uses: dawidd6/action-download-artifact@v2.24.2
       with:
         github_token: ${{ github.token }}
-        workflow: "Checkout-Build-Artifact"
+        workflow: Checkout-Build-Artifact
         name: VeraDemoDotNetCoreAppArtifact.zip
       continue-on-error: true
     
