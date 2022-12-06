@@ -1,0 +1,29 @@
+name: Security Scan
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs "Every Sunday" (see https://crontab.guru)
+    - cron: '5 8 * * Sun'
+
+jobs:
+  Veracode_SAST_SCA_Scan:
+
+    runs-on: ubuntu-latest
+    container: 
+      image: veracode/api-wrapper-java:latest
+      options: --user root
+    steps:
+    - uses: actions/checkout@v3
+        
+# Security Scan Mainline Branch / SAST and SCA Sanbox Scan
+
+    - name: Download workflow artifact
+      uses: dawidd6/action-download-artifact@v2.24.2
+      with:
+        github_token: ${{ github.token }}
+        workflow: Checkout-Build-Artifact
+        
+    - name: scan
+      run: |
+        java -jar /opt/veracode/api-wrapper.jar -vid "${{secrets.VERACODE_API_ID}}" -vkey "${{secrets.VERACODE_API_KEY}}" -action UploadAndScan -createprofile false -appname VeraDemo-DotNetCore-GitHub -version "${{ github.run_id }}" -filepath artifacts/VeraDemoDotNetCoreAppArtifact.zip
