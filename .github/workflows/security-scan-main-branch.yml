@@ -24,7 +24,11 @@ jobs:
         github_token: ${{ github.token }}
         workflow: "Checkout-Build-Artifact"
         name: VeraDemoDotNetCoreAppArtifact.zip
-        
+    
+    - name: scan
+      run: |
+        ls -la
+    
     - name: scan
       run: |
         java -jar /opt/veracode/api-wrapper.jar -vid "${{secrets.VERACODE_API_ID}}" -vkey "${{secrets.VERACODE_API_KEY}}" -action UploadAndScan -createprofile false -appname VeraDemo-DotNetCore-GitHub -version "${{ github.run_id }}" -filepath artifacts/VeraDemoDotNetCoreAppArtifact.zip
