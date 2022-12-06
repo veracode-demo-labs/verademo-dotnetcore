@@ -1,0 +1,45 @@
+name: Checkout Build Artifact
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs "Every Sunday" (see https://crontab.guru)
+    - cron: '15 8 * * Sun'
+jobs:
+  Checkout_Build_Artifact:
+
+    runs-on: ubuntu-latest
+
+# Checkout, Build, Artifact
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+   
+    - name: Restore dependencies
+      run: dotnet restore app
+    
+    - name: Build app
+      run: dotnet build app --no-restore
+    
+    - name: Zip application files 
+      uses: vimtor/action-zip@v1
+      with:
+        files: app/bin/Debug/netcoreapp3.1/
+        dest: verademodotnetcore.zip
+    
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.0
+      with:
+        # Artifact name
+        name: VeraDemoDotNetCoreAppArtifact
+        path: app/bin/Debug/netcoreapp3.1/  
+
+    - name: Pull Docker
+      run: docker pull mcr.microsoft.com/mssql/server:2017-CU24-ubuntu-16.04      
+      
+    - name: Build Docker Image
+      run: docker build --no-cache -t verademo-dotnet .
