@@ -1,4 +1,4 @@
-name: Checkout Build Artifact
+name: Checkout-Build-Artifact
 
 on:
   workflow_dispatch:
