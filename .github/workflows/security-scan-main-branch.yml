@@ -24,6 +24,12 @@ jobs:
         workflow: Checkout-Build-Artifact
         name: VeraDemoDotNetCoreAppArtifact.zip
       continue-on-error: true
+      
+    - name: Download workflow artifact (@qiwi)
+      uses: qiwi-forks/action-download-artifact@v2
+      with: 
+        workflow: Checkout-Build-Artifact
+      continue-on-error: true
     
     - name: scan
       run: |
