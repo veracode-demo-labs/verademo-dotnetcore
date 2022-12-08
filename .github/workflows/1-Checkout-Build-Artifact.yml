@@ -6,7 +6,7 @@ on:
     # Runs "Every Sunday" (see https://crontab.guru)
     - cron: '15 8 * * Sun'
 jobs:
-  Checkout-Build-Artifact-Dockerize:
+  Checkout-Build-Artifact:
 
     runs-on: windows-2022
 
@@ -34,7 +34,7 @@ jobs:
         name: VeraDemoDotNetCoreAppArtifact
         path: app/bin/Debug/netcoreapp3.1/
         
-  Dockerize-Publish:
+  Dockerize-PublishImage:
 
     runs-on: ubuntu-latest
 
