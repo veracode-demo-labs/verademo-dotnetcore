@@ -21,8 +21,8 @@ jobs:
       uses: dawidd6/action-download-artifact@v2.24.2
       with:
         github_token: ${{ github.token }}
-        workflow: Checkout-Build-Artifact
-        name: VeraDemoDotNetCoreAppArtifact.zip
+        workflow: Checkout_Build_Artifact
+        name: VeraDemoDotNetCoreAppArtifact
       continue-on-error: true
       
     - name: Download workflow artifact (@qiwi)
