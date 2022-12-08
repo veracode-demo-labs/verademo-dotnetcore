@@ -1,4 +1,4 @@
-name: 1-Checkout-Build-Artifact-Dockerize
+name: 1-Checkout-Build-Artifact
 
 on:
   workflow_dispatch:
@@ -32,22 +32,4 @@ jobs:
       uses: actions/upload-artifact@v3.1.0
       with:
         name: VeraDemoDotNetCoreAppArtifact
-        path: app/bin/Debug/netcoreapp3.1/  
-
-# Dockerize-Publish
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Pull Ubuntu MSSQL Docker Image Dependency
-      run: docker pull mcr.microsoft.com/mssql/server:2017-CU24-ubuntu-16.04      
-
-    - name: Build and Push Docker Image
-      uses: docker/build-push-action@v3.2.0
-      with:
-        context: .
-        push: true
-        tags: veracodedemolabs/vd-dotnetcore-gh:latest
+        path: app/bin/Debug/netcoreapp3.1/
