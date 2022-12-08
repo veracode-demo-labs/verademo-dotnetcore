@@ -50,4 +50,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: veracodedemolabs/vd-dotnetcore-gh
+        tags: veracodedemolabs/vd-dotnetcore-gh:latest
