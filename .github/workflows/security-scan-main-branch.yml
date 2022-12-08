@@ -31,7 +31,8 @@ jobs:
         github_token: ${{secrets.GITHUB_TOKEN}}
         workflow: Checkout-Build-Artifact.yml
         name: VeraDemoDotNetCoreAppArtifact
-      continue-on-error: true
+        skip_unpack: true
+      continue-on-error: false
     
     - name: scan
       run: |
