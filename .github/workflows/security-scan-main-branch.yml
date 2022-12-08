@@ -28,7 +28,9 @@ jobs:
     - name: Download workflow artifact (@qiwi)
       uses: qiwi-forks/action-download-artifact@v2
       with: 
-        workflow: Checkout-Build-Artifact
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow: Checkout-Build-Artifact.yml
+        name: VeraDemoDotNetCoreAppArtifact
       continue-on-error: true
     
     - name: scan
