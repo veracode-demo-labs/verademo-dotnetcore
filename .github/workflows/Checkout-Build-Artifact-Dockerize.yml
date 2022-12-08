@@ -6,7 +6,7 @@ on:
     # Runs "Every Sunday" (see https://crontab.guru)
     - cron: '15 8 * * Sun'
 jobs:
-  Checkout_Build_Artifact:
+  Checkout-Build-Artifact-Dockerize:
 
     runs-on: ubuntu-latest
 
@@ -18,12 +18,9 @@ jobs:
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
-   
-    - name: Restore Dependencies
-      run: dotnet restore app
     
     - name: Build App
-      run: dotnet build app --no-restore
+      run: dotnet build app
     
     - name: Zip Application Files 
       uses: vimtor/action-zip@v1
@@ -31,18 +28,20 @@ jobs:
         files: app/bin/Debug/netcoreapp3.1/
         dest: verademodotnetcore.zip
     
-    - name: Upload a Build Artifact
+    - name: Upload Application Build Artifact
       uses: actions/upload-artifact@v3.1.0
       with:
         name: VeraDemoDotNetCoreAppArtifact
         path: app/bin/Debug/netcoreapp3.1/  
 
-    - name: Pull Docker
+# Dockerize and Publish
+
+    - name: Pull Ubuntu MSSQL Docker Image
       run: docker pull mcr.microsoft.com/mssql/server:2017-CU24-ubuntu-16.04      
       
-    - name: Build and push Docker Image
+    - name: Build and Push Docker Image
       uses: docker/build-push-action@v3.2.0
       with:
         context: .
         push: true
-        tags: verademo-dotnet-github
+        tags: verademo-dotnetcore-github
