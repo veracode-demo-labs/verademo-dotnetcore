@@ -1,4 +1,4 @@
-name: Checkout-Build-Artifact-Dockerize
+name: 1-Checkout-Build-Artifact-Dockerize
 
 on:
   workflow_dispatch:
