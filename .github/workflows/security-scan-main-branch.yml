@@ -16,16 +16,8 @@ jobs:
     steps:
         
 # Security Scan Mainline Branch / SAST and SCA Sanbox Scan
-
-    - name: Download workflow artifact
-      uses: dawidd6/action-download-artifact@v2.24.2
-      with:
-        github_token: ${{ github.token }}
-        workflow: Checkout_Build_Artifact
-        name: VeraDemoDotNetCoreAppArtifact
-      continue-on-error: true
       
-    - name: Download workflow artifact (@qiwi)
+    - name: Download Checkout-Build-Artifact Workflow Artifact
       uses: qiwi-forks/action-download-artifact@v2
       with: 
         github_token: ${{secrets.GITHUB_TOKEN}}
@@ -34,10 +26,10 @@ jobs:
         skip_unpack: true
       continue-on-error: false
     
-    - name: scan
+    - name: List folder contents for visual 
       run: |
         ls -la
     
-    - name: scan
+    - name: Submit Security Scan SAST SCA
       run: |
         java -jar /opt/veracode/api-wrapper.jar -vid "${{secrets.VERACODE_API_ID}}" -vkey "${{secrets.VERACODE_API_KEY}}" -action UploadAndScan -createprofile false -appname VeraDemo-DotNetCore-GitHub -version "${{ github.run_id }}" -filepath VeraDemoDotNetCoreAppArtifact.zip
