@@ -41,7 +41,7 @@ jobs:
       run: docker pull mcr.microsoft.com/mssql/server:2017-CU24-ubuntu-16.04      
       
     - name: Build and push Docker Image
-      uses: docker/build-push-action@3.2.0
+      uses: docker/build-push-action@v3.2.0
       with:
         context: .
         push: true
