@@ -1,4 +1,4 @@
-name: Security Scan
+name: 2-Security-Scan-SAST-SCA-SBOM-DAST
 
 on:
   workflow_dispatch:
@@ -21,7 +21,7 @@ jobs:
       uses: qiwi-forks/action-download-artifact@v2
       with: 
         github_token: ${{secrets.GITHUB_TOKEN}}
-        workflow: Checkout-Build-Artifact.yml
+        workflow: 1-Checkout-Build-Artifact-Dockerize.yml
         name: VeraDemoDotNetCoreAppArtifact
         skip_unpack: true
       continue-on-error: false
