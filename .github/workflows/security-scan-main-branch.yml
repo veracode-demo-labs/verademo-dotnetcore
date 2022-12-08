@@ -40,4 +40,4 @@ jobs:
     
     - name: scan
       run: |
-        java -jar /opt/veracode/api-wrapper.jar -vid "${{secrets.VERACODE_API_ID}}" -vkey "${{secrets.VERACODE_API_KEY}}" -action UploadAndScan -createprofile false -appname VeraDemo-DotNetCore-GitHub -version "${{ github.run_id }}" -filepath artifacts/VeraDemoDotNetCoreAppArtifact.zip
+        java -jar /opt/veracode/api-wrapper.jar -vid "${{secrets.VERACODE_API_ID}}" -vkey "${{secrets.VERACODE_API_KEY}}" -action UploadAndScan -createprofile false -appname VeraDemo-DotNetCore-GitHub -version "${{ github.run_id }}" -filepath VeraDemoDotNetCoreAppArtifact.zip
