@@ -1,4 +1,4 @@
-name: 1-Checkout-Build-Artifact
+name: 1-Checkout-Build-Artifact-Dockerize-Publish
 
 on:
   workflow_dispatch:
@@ -56,5 +56,5 @@ jobs:
       with:
         context: .
         push: true
-        tags: veracodedemolabs/vd-dotnetcore-gh:latest
+        tags: veracodedemolabs/verademo-dotnetcore-github:latest
 
