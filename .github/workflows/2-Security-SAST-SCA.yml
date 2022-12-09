@@ -26,7 +26,7 @@ jobs:
         skip_unpack: true
       continue-on-error: false
     
-    - name: List folder contents for visual 
+    - name: List folder contents for visual to confirm artifact file exists
       run: |
         ls -la
     
