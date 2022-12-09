@@ -29,4 +29,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: veracodedemolabs/vd-dotnetcore-gh:latest
+        tags: veracodedemolabs/verademo-dotnetcore-github:latest
