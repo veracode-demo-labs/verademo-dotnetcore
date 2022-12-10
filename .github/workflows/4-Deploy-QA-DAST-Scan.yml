@@ -1,0 +1,70 @@
+name: 4-Deploy-QA-DAST-Scan
+
+# Only triggers manually or when the build "2-Build and Publish Docker Image" workflow succeeds
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["2-Build and Publish Docker Image"]
+    types:
+      - completed
+      
+# Deploy and run the Docker image for QA and DAST testing
+jobs:
+  Deploy-Docker-Image-QA-Server:
+    runs-on: [self-hosted]
+    steps:         
+      - name: Terminate previous QA Docker image to run new version
+        run: |
+         docker stop verademo-java-github
+         docker rm verademo-java-github
+        continue-on-error: true
+       
+# Pull new Docker image to QA web server
+      - name: Pull new Docker image to QA web server
+        run: |
+         docker pull veracodedemolabs/verademo-java-github:latest
+         
+# Run Docker image on QA webserver for testing
+      - name: Run Docker image
+        run: |
+         docker run -d --name verademo-java-github -p 8080:8080 veracodedemolabs/verademo-java-github:latest
+         
+# Workflow to run DAST Scan against QA server.  We use the veracode/api-signing image for this.
+  Submit-DAST-Scan:
+    runs-on: ubuntu-latest
+    container: 
+      image: veracode/api-signing:latest
+    steps:            
+
+# Download the Veracode DAST Config artifact from workflow 1-Checkout-Build-Artifact.yml
+      - name: Download Checkout-Build-Artifact Workflow Artifact
+        uses: qiwi-forks/action-download-artifact@v2
+        with: 
+         github_token: ${{secrets.GITHUB_TOKEN}}
+         workflow: 1-Checkout-Build-Artifact.yml
+         name: Veracode-DAST-Config
+         path: /tmp/
+        continue-on-error: false
+
+# Handy during testing to check the file you expect is actually there 
+      - name: Confirm DAST config file exists
+        run: |
+         ls -la /tmp
+# Update the DAST Scan Name to be uniuqe         
+      - name: Update DAST config file with uniuqe scan name
+        run: |
+         cd /tmp
+         NOW=$(date +"%m-%d-%Y-%T")
+         sed -i 's/VeraDemo-Java-GitHub/VeraDemo-Java-GitHub-'${NOW}'/g' vc-dast-config.json
+# Visual confirmation of the scan submission details
+      - name: Display DAST config file with uniuqe scan name
+        run: |
+          cat /tmp/vc-dast-config.json
+ 
+# DAST scan submission using the DAST API 
+      - name: Submit Veracode DAST Scan
+        run: |
+         export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
+         export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
+         http --auth-type=veracode_hmac POST "https://api.veracode.com/was/configservice/v1/analyses" < /tmp/vc-dast-config.json
