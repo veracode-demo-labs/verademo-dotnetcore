@@ -1,4 +1,4 @@
-name: 3-Build and Publish Docker Image
+name: 2-Build and Publish Docker Image
 
 # This step will build and publish the Docker image to https://hub.docker.com/repository/docker/veracodedemolabs/verademo-dotnetcore-github
 # It will run manually or automatically after 1-Checkout-Build-Artifact.yml completes.
