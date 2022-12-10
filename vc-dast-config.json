@@ -1,9 +1,9 @@
 {
-  "name": "VeraDemo-Java-GitHub",
+  "name": "VeraDemo-DotNetCore-GitHub",
   "scan_setting": {
     "custom_hosts": [
       {
-        "host_name": "verademo-java-github.qa",
+        "host_name": "verademo-dotnetcore-github.qa",
         "ip_address": "98.214.52.114"
       }
     ],
@@ -20,7 +20,7 @@
     {
       "scan_config_request": {
         "target_url": {
-          "url": "http://verademo-java-github.qa:8080"
+          "url": "http://verademo-dotnetcore-github.qa:8081"
         }
       }
     }
