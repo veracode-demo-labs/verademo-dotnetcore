@@ -1,10 +1,15 @@
 name: 3-Build and Publish Docker Image
 
+# This step will build and publish the Docker image to https://hub.docker.com/repository/docker/veracodedemolabs/verademo-dotnetcore-github
+# It will run manually or automatically after 1-Checkout-Build-Artifact.yml completes.
+
+
 on:
   workflow_dispatch:
-  schedule:
-    # Runs "Every Sunday" (see https://crontab.guru)
-    - cron: '15 8 * * Sun'
+  workflow_run:
+    workflows: ["1-Checkout-Build-Artifact"]
+    types:
+      - completed
 
 jobs:
 
@@ -13,15 +18,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+# Checkout code
     - uses: actions/checkout@v3
-    # Dockerize-Publish
+    
+# Login to Docker Hub
     - name: Login to Docker Hub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}  
 
-    - name: Build and Push Docker Image
+# Build and push Docker image
+    - name: Build and push Docker image
       uses: docker/build-push-action@v3.2.0
       with:
         context: .
