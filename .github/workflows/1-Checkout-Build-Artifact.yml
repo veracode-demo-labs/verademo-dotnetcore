@@ -40,16 +40,10 @@ jobs:
         name: VeraDemoDotNetCoreAppArtifact
         path: app/bin/Debug/netcoreapp3.1/
         
-# Artifact the Veracode DAST config to use for QA testing      
+# Artifact the Veracode DAST config to use in a following workflow
     - name: Upload DAST Config for Later Use
       uses: actions/upload-artifact@v3.1.0
       with:
         # Artifact name
         name: Veracode-DAST-Config
         path: vc-dast-config.json
-    steps:
-    - uses: actions/checkout@v3
-    
-
-        tags: veracodedemolabs/verademo-dotnetcore-github:latest
-
