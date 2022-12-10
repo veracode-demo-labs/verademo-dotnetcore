@@ -16,19 +16,19 @@ jobs:
     steps:         
       - name: Terminate previous QA Docker image to run new version
         run: |
-         docker stop verademo-java-github
-         docker rm verademo-java-github
+         docker stop verademo-dotnetcore-github
+         docker rm verademo-dotnetcore-github
         continue-on-error: true
        
 # Pull new Docker image to QA web server
       - name: Pull new Docker image to QA web server
         run: |
-         docker pull veracodedemolabs/verademo-java-github:latest
+         docker pull veracodedemolabs/verademo-dotnetcore-github:latest
          
 # Run Docker image on QA webserver for testing
       - name: Run Docker image
         run: |
-         docker run -d --name verademo-java-github -p 8080:8080 veracodedemolabs/verademo-java-github:latest
+         docker run -d --name verademo-dotnetcore-github -p 8081:8081 veracodedemolabs/verademo-dotnetcore-github:latest
          
 # Workflow to run DAST Scan against QA server.  We use the veracode/api-signing image for this.
   Submit-DAST-Scan:
