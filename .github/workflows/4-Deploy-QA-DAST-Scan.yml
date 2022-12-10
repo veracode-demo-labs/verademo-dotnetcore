@@ -51,12 +51,14 @@ jobs:
       - name: Confirm DAST config file exists
         run: |
          ls -la /tmp
+
 # Update the DAST Scan Name to be uniuqe         
       - name: Update DAST config file with uniuqe scan name
         run: |
          cd /tmp
          NOW=$(date +"%m-%d-%Y-%T")
-         sed -i 's/VeraDemo-Java-GitHub/VeraDemo-Java-GitHub-'${NOW}'/g' vc-dast-config.json
+         sed -i 's/VeraDemo-DotNetCore-GitHub/VeraDemo-DotNetCore-GitHub-'${NOW}'/g' vc-dast-config.json
+
 # Visual confirmation of the scan submission details
       - name: Display DAST config file with uniuqe scan name
         run: |
