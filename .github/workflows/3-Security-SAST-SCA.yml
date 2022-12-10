@@ -1,0 +1,79 @@
+name: 3-Security-Scan-SAST-SCA
+
+# This Workflow will submit the application artifact to Veracode for SAST and SCA scan
+# It will run manually or automatically after 1-Checkout-Build-Artifact.yml completes
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["2-Build and Publish Docker Image"]
+    types:
+      - completed
+
+jobs:
+  Security-Scan-SAST-SCA:
+    runs-on: ubuntu-latest
+    steps:
+        
+# Download the most recent build artifact from the 1-Checkout-Build-Artifact worfklow.
+      
+    - name: Download Checkout-Build-Artifact Workflow Artifact
+      uses: qiwi-forks/action-download-artifact@v2
+      with: 
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        workflow: 1-Checkout-Build-Artifact.yml
+        name: VeraDemoDotNetCoreAppArtifact
+        skip_unpack: true
+      continue-on-error: false
+    
+    - name: List folder contents for visual to confirm artifact file exists
+      run: |
+        ls -la
+    
+# Use the UploadAndScan action to submit the artifact for scanning
+    - name: Veracode Upload and Scan Action Step
+      uses: veracode/veracode-uploadandscan-action@master
+      id: upload_and_scan
+      with:
+        appname: 'VeraDemo-DotNetCore-GitHub'
+        createprofile: false
+        version: '${{ github.run_id }}-'
+        criticality: Medium
+        filepath: 'VeraDemoDotNetCoreAppArtifact.zip'
+        vid: '${{ secrets.VERACODE_API_ID }}'
+        vkey: '${{ secrets.VERACODE_API_KEY }}'
+      continue-on-error: true
+
+# Synch Issues into GitHub Issues.  This will synch the issues from the most recent completed SAST/SCA Policy scan.
+# This is fine for most, see more advanced workflow to get more instant feedback if needed.
+  Synch-Issues-to-GitHub:
+    runs-on: ubuntu-latest
+    container: 
+      image: veracode/api-signing:latest
+    steps:
+      - name: Get SAST/SCA Policy flaws
+        run: |
+          cd /tmp
+          export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
+          export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
+          guid=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications?name=VeraDemo-DotNetCore-GitHub" | jq -r '._embedded.applications[0].guid') 
+          echo GUID: ${guid}
+          total_flaws=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True" | jq -r '.page.total_elements')
+          echo TOTAL_FLAWS: ${total_flaws}
+          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > policy_flaws.json
+          
+          total_sca=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=SCA&violates_policy=True" | jq -r '.page.total_elements')
+          echo TOTAL_SCA: ${total_sca}
+          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=SCA&violates_policy=True&size=${total_sca}" > sca_flaws.json
+     
+      - name: Synch SAST Security Issues to GitHub Issues
+        uses: veracode/veracode-flaws-to-issues@v1
+        with:
+          scan-results-json: '/tmp/policy_flaws.json'
+          github-token: ${{ secrets.GH_TOKEN }}     
+
+      - name: Synch SCA Security Issues to GitHub Issues
+        uses: veracode/veracode-flaws-to-issues@v1
+        with:
+          scan-results-json: '/tmp/sca_flaws.json'
+          github-token: ${{ secrets.GH_TOKEN }}    
