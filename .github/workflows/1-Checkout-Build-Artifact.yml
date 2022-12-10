@@ -1,60 +1,55 @@
-name: 1-Checkout-Build-Artifact-Dockerize-Publish
+name: 1-Checkout-Build-Artifact
 
+# This workflow will checkout the code, build the DotNet app, and create an artifact from the BIN folder for use in following workflows.
+# For best scan results, we are using a Windows-2022 image to build the .Net code.
 on:
+  # Enables manual runs
   workflow_dispatch:
   schedule:
     # Runs "Every Sunday" (see https://crontab.guru)
     - cron: '15 8 * * Sun'
 jobs:
   Checkout-Build-Artifact:
-
     runs-on: windows-2022
-
-# Checkout-Build-Artifact
-
     steps:
+
+# Checkout code
     - uses: actions/checkout@v3
+
+# Setup the .Net environment    
     - name: Setup .NET
       uses: actions/setup-dotnet@v2
       with:
         dotnet-version: 6.0.x
-    
+
+# Build the .Net applications    
     - name: Build App
       run: dotnet build app
-    
+
+# ZIP up the BIN folder where the Bytecode is located
     - name: Zip Application Files 
       uses: vimtor/action-zip@v1
       with:
         files: app/bin/Debug/netcoreapp3.1/
         dest: verademodotnetcore.zip
-    
+
+# Upload ZIP artifact for other worfklows    
     - name: Upload Application Build Artifact
       uses: actions/upload-artifact@v3.1.0
       with:
         name: VeraDemoDotNetCoreAppArtifact
         path: app/bin/Debug/netcoreapp3.1/
         
-  Dockerize-PublishImage:
-
-    runs-on: ubuntu-latest
-
+# Artifact the Veracode DAST config to use for QA testing      
+    - name: Upload DAST Config for Later Use
+      uses: actions/upload-artifact@v3.1.0
+      with:
+        # Artifact name
+        name: Veracode-DAST-Config
+        path: vc-dast-config.json
     steps:
     - uses: actions/checkout@v3
     
-# Dockerize-Publish
-    - name: Login to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    - name: Pull Ubuntu MSSQL Docker Image Dependency
-      run: docker pull mcr.microsoft.com/mssql/server:2017-CU24-ubuntu-16.04      
-
-    - name: Build and Push Docker Image
-      uses: docker/build-push-action@v3.2.0
-      with:
-        context: .
-        push: true
         tags: veracodedemolabs/verademo-dotnetcore-github:latest
 
