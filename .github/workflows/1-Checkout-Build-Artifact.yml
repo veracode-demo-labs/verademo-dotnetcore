@@ -6,8 +6,8 @@ on:
   # Enables manual runs
   workflow_dispatch:
   schedule:
-    # Runs "Every Sunday" (see https://crontab.guru)
-    - cron: '15 8 * * Sun'
+    # Runs "Every day ay 6:05" (see https://crontab.guru)
+    - cron: '5 6 * * *'
 jobs:
   Checkout-Build-Artifact:
     runs-on: windows-2022
