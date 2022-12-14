@@ -2,3 +2,5 @@ app/bin/
 app/obj/
 app/app.csproj.user
 app/Properties/launchSettings.json
+app/.vscode/launch.json
+app/.vscode/tasks.json
