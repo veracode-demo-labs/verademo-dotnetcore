@@ -37,7 +37,7 @@ jobs:
       with:
         appname: 'VeraDemo-DotNetCore-GitHub'
         createprofile: false
-        version: '${{ github.run_id }}-'
+        version: '${{ github.run_id }}'
         criticality: Medium
         filepath: 'VeraDemoDotNetCoreAppArtifact.zip'
         vid: '${{ secrets.VERACODE_API_ID }}'
