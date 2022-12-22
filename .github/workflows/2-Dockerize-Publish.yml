@@ -36,3 +36,14 @@ jobs:
         context: .
         push: true
         tags: veracodedemolabs/verademo-dotnetcore-github:latest
+        
+        
+    - name: SCA Agent Scan of Repo
+      env: 
+        SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
+      run: curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan app
+      
+    - name: SCA Container Scan
+      env: 
+        SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
+      run: curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan --image veracodedemolabs/verademo-dotnetcore-github:latest   
