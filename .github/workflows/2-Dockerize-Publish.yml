@@ -1,4 +1,4 @@
-name: 2-Build and Publish Docker Image
+name: 2-Build Docker Image/Publish/SCA SBOM
 
 # This step will build and publish the Docker image to https://hub.docker.com/repository/docker/veracodedemolabs/verademo-dotnetcore-github
 # It then runs a SCA Agent scan against the repo and the container.
