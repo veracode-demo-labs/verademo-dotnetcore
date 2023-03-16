@@ -1,4 +1,4 @@
-name: 2-Build & Publish Docker Image / SCA Agent
+name: 2-Build & Publish Docker Image
 
 # This step will build and publish the Docker image to https://hub.docker.com/repository/docker/veracodedemolabs/verademo-dotnetcore-github
 # It then runs a SCA Agent scan against the repo and the container.
@@ -37,15 +37,3 @@ jobs:
         context: .
         push: true
         tags: veracodedemolabs/verademo-dotnetcore-github:latest
-        
-# Running Software Composition Analysis against the local repo and the container
-
-    - name: SCA Agent Scan of Repo
-      env: 
-        SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
-      run: curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan app
-      
-    - name: SCA Container Scan
-      env: 
-        SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
-      run: curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan --image veracodedemolabs/verademo-dotnetcore-github:latest   
