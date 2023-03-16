@@ -1,4 +1,4 @@
-name: 3-Security-Scan-SAST-SCA
+name: 3-Security-Scan-SAST-SCA-SBOM
 
 # This Workflow will submit the application artifact to Veracode for SAST and SCA scan
 # It will run manually or automatically after 1-Checkout-Build-Artifact.yml completes
@@ -80,7 +80,7 @@ jobs:
           export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
           ls -la
           ./veracode scan --source /home/runner/work/verademo-dotnetcore/verademo-dotnetcore --type directory --format table -o IssuesSource.txt
-          ./veracode sbom --source veracodedemolabs/veracodedemolabs/verademo-dotnetcore-github:latest --type image --format table -o SBOM.txt
+          ./veracode sbom --source veracodedemolabs/verademo-dotnetcore-github:latest --type image --format table -o SBOM.txt
 # Store security artifacts
       - name: Upload security artifacts
         uses: actions/upload-artifact@v3.1.0
