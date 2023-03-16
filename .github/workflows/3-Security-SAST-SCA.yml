@@ -44,14 +44,14 @@ jobs:
         vkey: '${{ secrets.VERACODE_API_KEY }}'
       continue-on-error: true
 
-# Synch Issues into GitHub Issues.  This will synch the issues from the most recent completed SAST/SCA Policy scan.
+# Synch Issues into GitHub Issues.  This will synch the issues from the most recent completed SAST Policy scan.
 # This is fine for most, see more advanced workflow to get more instant feedback if needed.
   Synch-Issues-to-GitHub:
     runs-on: ubuntu-latest
     container: 
       image: veracode/api-signing:latest
     steps:
-      - name: Get SAST/SCA Policy flaws
+      - name: Get SAST Policy flaws
         run: |
           cd /tmp
           export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
@@ -61,19 +61,29 @@ jobs:
           total_flaws=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True" | jq -r '.page.total_elements')
           echo TOTAL_FLAWS: ${total_flaws}
           http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > policy_flaws.json
-          
-          total_sca=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=SCA&violates_policy=True" | jq -r '.page.total_elements')
-          echo TOTAL_SCA: ${total_sca}
-          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=SCA&violates_policy=True&size=${total_sca}" > sca_flaws.json
-     
+
       - name: Synch SAST Security Issues to GitHub Issues
         uses: veracode/veracode-flaws-to-issues@v1
         with:
           scan-results-json: '/tmp/policy_flaws.json'
-          github-token: ${{ secrets.GH_TOKEN }}     
-
-      - name: Synch SCA Security Issues to GitHub Issues
-        uses: veracode/veracode-flaws-to-issues@v1
+          github-token: ${{ secrets.GH_TOKEN }} 
+    
+  Container-Inspection-SBOM:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Veracode Container Scanner
+        run: |
+          mkdir tmp
+          cd tmp
+          curl -fsS https://tools.veracode.com/veracode-cli/install | sh
+          export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
+          export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
+          ls -la
+          ./veracode scan --source /home/runner/work/verademo-dotnetcore/verademo-dotnetcore --type directory --format table -o IssuesSource.txt
+          ./veracode sbom --source veracodedemolabs/veracodedemolabs/verademo-dotnetcore-github:latest --type image --format table -o SBOM.txt
+# Store security artifacts
+      - name: Upload security artifacts
+        uses: actions/upload-artifact@v3.1.0
         with:
-          scan-results-json: '/tmp/sca_flaws.json'
-          github-token: ${{ secrets.GH_TOKEN }}    
+          name: SecurityArtifacts
+          path: ./tmp/*.txt     
