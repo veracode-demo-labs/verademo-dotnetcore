@@ -16,7 +16,6 @@ jobs:
     steps:         
       - name: Terminate previous QA Docker image to run new version
         run: |
-         docker image prune -a --filter "until=24h"
          docker stop verademo-dotnetcore-github
          docker rm verademo-dotnetcore-github
         continue-on-error: true
