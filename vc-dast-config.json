@@ -4,7 +4,7 @@
     "custom_hosts": [
       {
         "host_name": "verademo-dotnetcore-github.qa",
-        "ip_address": "98.214.52.114"
+        "ip_address": "75.150.222.61"
       }
     ],
     "max_browsers": 10
