@@ -58,16 +58,29 @@ jobs:
           export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
           guid=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications?name=VeraDemo-DotNetCore-GitHub" | jq -r '._embedded.applications[0].guid') 
           echo GUID: ${guid}
+          
+          # Report on SAST flaws which violate policy
           total_flaws=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True" | jq -r '.page.total_elements')
           echo TOTAL_FLAWS: ${total_flaws}
           http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > policy_flaws.json
+          
+          # Report on DAST vulnerabilities which violate policy
+          total_vulns=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=DAST&violates_policy=True" | jq -r '.page.total_elements')
+          echo TOTAL_VULNS: ${total_vulns}
+          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=DAST&violates_policy=True&size=${total_vulns}" > policy_vulns.json
 
-      - name: Synch SAST Security Issues to GitHub Issues
+      - name: Synch SAST flaws to GitHub Issues
         uses: veracode/veracode-flaws-to-issues@v1
         with:
           scan-results-json: '/tmp/policy_flaws.json'
           github-token: ${{ secrets.GH_TOKEN }} 
     
+      - name: Synch DAST vulnerabilities GitHub Issues
+        uses: veracode/veracode-flaws-to-issues@v1
+        with:
+          scan-results-json: '/tmp/policy_vulns.json'
+          github-token: ${{ secrets.GH_TOKEN }} 
+          
   Container-Inspection-SBOM:
     runs-on: ubuntu-latest
     steps:
@@ -98,7 +111,7 @@ jobs:
         run: |
           ls -la
     
-      #SCA Agnet against Repo
+      #SCA Agent against repo
       - name: Veracode SCA Agent Dependency Scanning
         env:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
