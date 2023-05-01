@@ -64,12 +64,7 @@ jobs:
         run: |
           cat /tmp/vc-dast-config.json
 
-# DAST scan submission using the DAST API 
-      - name: Submit Veracode DAST Scan
-        run: |
-
-
-# DAST scan submission using the DAST API 
+# DAST scan submission 
       - name: Submit Veracode DAST Scan
         run: |
          export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
