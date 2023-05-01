@@ -92,6 +92,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     # Running Software Composition Analysis Agent against the local repo and the container
+      # Checkout code
+      - uses: actions/checkout@v3
+      
+      #SCA Agnet against Repo
       - name: Veracode SCA Agent Dependency Scanning
         env:
           SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
