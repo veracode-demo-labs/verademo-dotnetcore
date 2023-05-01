@@ -6,7 +6,7 @@ name: 3-Security-Scan-SAST-SCA-SBOM
 on:
   workflow_dispatch:
   workflow_run:
-    workflows: ["2-Build & Publish Docker Image"]
+    workflows: ["2-Dockerize-Publish"]
     types:
       - completed
 
