@@ -94,7 +94,10 @@ jobs:
     # Running Software Composition Analysis Agent against the local repo and the container
       # Checkout code
       - uses: actions/checkout@v3
-      
+      - name: List folder contents for visual to confirm artifact file exists
+        run: |
+          ls -la
+    
       #SCA Agnet against Repo
       - name: Veracode SCA Agent Dependency Scanning
         env:
