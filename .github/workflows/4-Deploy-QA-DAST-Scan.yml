@@ -69,4 +69,4 @@ jobs:
         run: |
          export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
          export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
-         http --auth-type=veracode_hmac -print=HhBb POST "https://api.veracode.com/was/configservice/v1/analyses" < /tmp/vc-dast-config.json
+         http --body --auth-type=veracode_hmac POST "https://api.veracode.com/was/configservice/v1/analyses" < /tmp/vc-dast-config.json
