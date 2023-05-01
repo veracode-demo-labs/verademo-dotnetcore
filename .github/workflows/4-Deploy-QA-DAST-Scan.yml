@@ -71,5 +71,11 @@ jobs:
          export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
          http --auth-type=veracode_hmac POST "https://api.veracode.com/was/configservice/v1/analyses" < /tmp/vc-dast-config.json > /tmp/dast-api.txt
          ls -la /tmp
-         type /tmp/dast-api.txt
-         more /tmp/dast-api.txt
+         tail /tmp/dast-api.txt
+         
+# Upload DAST status txt file
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: DAST-Status
+          path: ./tmp/dast-api.txt         
