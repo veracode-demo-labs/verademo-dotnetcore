@@ -69,5 +69,5 @@ jobs:
         env: 
           VERACODE_API_KEY_ID: ${{ secrets.VERACODE_API_ID }}
           VERACODE_API_KEY_SECRET: ${{ secrets.VERACODE_API_KEY }}
-        run: http --auth-type=veracode_hmac POST "https://api.veracode.com/was/configservice/v1/analyses" < /tmp/vc-dast-config.json
+        run: http --auth-type=veracode_hmac --print=Hh POST "https://api.veracode.com/was/configservice/v1/analyses" < /tmp/vc-dast-config.json
       
