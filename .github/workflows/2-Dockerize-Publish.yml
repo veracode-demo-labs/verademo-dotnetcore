@@ -37,28 +37,3 @@ jobs:
         context: .
         push: true
         tags: veracodedemolabs/verademo-dotnetcore-github:latest
-
-# Running Software Composition Analysis Agent against the local repo and the container
-    - name: Veracode SCA Agent Dependency Scanning
-      env:
-        SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
-      uses: veracode/veracode-sca@v2.0.65
-      with:
-        github_token: ${{ github.token }}
-        update_advisor: true
-        create-issues: true
-        # A path within the repository where the build definition starts
-        path: app
-        # Run the SRCCLR with the `--allow-dirty` option
-        allow-dirty: true 
-    
-    - name: SCA Agent Container Scan
-      env: 
-        SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
-      run: curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan --image veracodedemolabs/verademo-dotnetcore-github:latest --json=SCA-Container-Results-${{ github.run_id }}.json
-      
-    - name: Upload artifact with SCA app and container issues for this build
-      uses: actions/upload-artifact@v3.1.1
-      with:
-         name: SCA-Issues-VeraDemoDotNetCore-${{ github.run_id }}
-         path: "*.json"       
