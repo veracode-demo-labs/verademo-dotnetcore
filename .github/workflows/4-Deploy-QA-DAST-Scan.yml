@@ -67,10 +67,11 @@ jobs:
 # DAST scan submission using the DAST API 
       - name: Submit Veracode DAST Scan
         run: |
-         export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
-         export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
+
 
 # DAST scan submission using the DAST API 
       - name: Submit Veracode DAST Scan
         run: |
-         http --body --auth-type=veracode_hmac POST "https://api.veracode.com/was/configservice/v1/analyses" < /tmp/vc-dast-config.json
+         export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
+         export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
+         http --auth-type=veracode_hmac --print=Hh POST "https://api.veracode.com/was/configservice/v1/analyses" < /tmp/vc-dast-config.json
