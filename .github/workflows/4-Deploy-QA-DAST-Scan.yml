@@ -63,10 +63,14 @@ jobs:
       - name: Display DAST config file with uniuqe scan name
         run: |
           cat /tmp/vc-dast-config.json
- 
+
 # DAST scan submission using the DAST API 
       - name: Submit Veracode DAST Scan
         run: |
          export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
          export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
+
+# DAST scan submission using the DAST API 
+      - name: Submit Veracode DAST Scan
+        run: |
          http --body --auth-type=veracode_hmac POST "https://api.veracode.com/was/configservice/v1/analyses" < /tmp/vc-dast-config.json
