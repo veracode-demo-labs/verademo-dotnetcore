@@ -65,9 +65,9 @@ jobs:
           http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > policy_flaws.json
           
           # Report on DAST vulnerabilities which violate policy
-          total_vulns=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=DAST&violates_policy=True" | jq -r '.page.total_elements')
+          total_vulns=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=DYNAMIC&violates_policy=True" | jq -r '.page.total_elements')
           echo TOTAL_VULNS: ${total_vulns}
-          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=DAST&violates_policy=True&size=${total_vulns}" > policy_vulns.json
+          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=DYNAMIC&violates_policy=True&size=${total_vulns}" > policy_vulns.json
 
       - name: Synch SAST flaws to GitHub Issues
         uses: veracode/veracode-flaws-to-issues@v1
