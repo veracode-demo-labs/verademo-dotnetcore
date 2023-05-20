@@ -28,7 +28,7 @@ jobs:
 # Run Docker image on QA webserver for testing
       - name: Run Docker image
         run: |
-         docker run -d --name verademo-dotnetcore-github -p 8081:8080 veracodedemolabs/verademo-dotnetcore-github:latest
+         docker run --rm -d --name verademo-dotnetcore-github -p 8081:8080 veracodedemolabs/verademo-dotnetcore-github:latest
          
 # Workflow to run DAST Scan against QA server.  We use the veracode/api-signing image for this.
   Submit-DAST-Scan:
