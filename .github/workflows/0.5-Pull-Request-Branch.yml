@@ -44,5 +44,4 @@ jobs:
         unzip veracode.zip
     
     - name: Run Pipeline Scanner
-      continue-on-error: true
       run: java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_ID}}" --veracode_api_key "${{secrets.VERACODE_KEY}}" --file "verademodotnetcore.zip" -jo true -so true --project_url https://www.github.com/$GITHUB_REPOSITORY -p $GITHUB_REPOSITORY -r $GITHUB_REF
