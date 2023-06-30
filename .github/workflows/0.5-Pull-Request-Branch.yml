@@ -1,4 +1,4 @@
-name: 1-Check-Pull-Request-Branch
+name: .5-Check-Pull-Request-Branch
 
 # This workflow will checkout the code, build the DotNet app, and create an artifact from the BIN folder for use in following workflows.
 # For best scan results, we are using a Windows-2022 image to build the .Net code.
