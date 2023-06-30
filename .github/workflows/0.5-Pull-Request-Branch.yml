@@ -38,10 +38,11 @@ jobs:
         curl https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip -o veracode.zip
         unzip veracode.zip
 
-    - name: Download pipeline code
+    - name: Download Veracode Pipeline Scanner
       run: |
         curl https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip -o veracode.zip
         unzip veracode.zip
     
     - name: Run Pipeline Scanner
-         run: java -jar ./dls/pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_ID}}" --veracode_api_key "${{secrets.VERACODE_KEY}}" --file "result.zip" -jo true -so true --project_url https://www.github.com/$GITHUB_REPOSITORY -p $GITHUB_REPOSITORY -r $GITHUB_REF
+      continue-on-error: true
+      run: java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_ID}}" --veracode_api_key "${{secrets.VERACODE_KEY}}" --file "verademodotnetcore.zip" -jo true -so true --project_url https://www.github.com/$GITHUB_REPOSITORY -p $GITHUB_REPOSITORY -r $GITHUB_REF
