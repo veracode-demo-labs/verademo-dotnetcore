@@ -1,0 +1,47 @@
+name: 1-Check-Pull-Request-Branch
+
+# This workflow will checkout the code, build the DotNet app, and create an artifact from the BIN folder for use in following workflows.
+# For best scan results, we are using a Windows-2022 image to build the .Net code.
+on:
+  # Enables manual runs
+  workflow_dispatch:
+  schedule:
+    # Runs "Every day ay 6:05" (see https://crontab.guru)
+    - cron: '5 6 * * *'
+jobs:
+  Checkout-Build-Artifact:
+    runs-on: windows-2022
+    steps:
+
+# Checkout code
+    - uses: actions/checkout@v3
+
+# Setup the .Net environment    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+
+# Build the .Net applications    
+    - name: Build App
+      run: dotnet build app
+
+# ZIP up the BIN folder where the Bytecode is located
+    - name: Zip Application Files 
+      uses: vimtor/action-zip@v1
+      with:
+        files: app/bin/Debug/netcoreapp3.1/
+        dest: verademodotnetcore.zip
+      
+    - name: Download pipeline code
+      run: |
+        curl https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip -o veracode.zip
+        unzip veracode.zip
+
+    - name: Download pipeline code
+      run: |
+        curl https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip -o veracode.zip
+        unzip veracode.zip
+    
+    - name: Run Pipeline Scanner
+         run: java -jar ./dls/pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_ID}}" --veracode_api_key "${{secrets.VERACODE_KEY}}" --file "result.zip" -jo true -so true --project_url https://www.github.com/$GITHUB_REPOSITORY -p $GITHUB_REPOSITORY -r $GITHUB_REF
