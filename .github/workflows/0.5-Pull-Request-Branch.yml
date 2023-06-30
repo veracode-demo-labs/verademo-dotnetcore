@@ -41,3 +41,10 @@ jobs:
     - name: Run Pipeline Scanner
       continue-on-error: true
       run: java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}" --file "verademodotnetcore.zip" -jo true -so true
+
+    - name: Upload Results.json
+      uses: actions/upload-artifact@v3.1.0
+      with:
+        # Artifact name
+        name: Pipeline Scanner Results
+        path: results.json
