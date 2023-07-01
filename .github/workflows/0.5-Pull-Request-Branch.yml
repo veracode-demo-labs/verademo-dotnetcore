@@ -1,6 +1,6 @@
 name: .5-Check-Pull-Request-Branch
 
-# This workflow will checkout the code, build the DotNet app, and create an artifact from the BIN folder for use in following workflows.
+# This workflow will checkout the code, build the DotNet app, create an artifact from the BIN folder, and scan with the Veracode Static Pipeline Scanner.
 # For best scan results, we are using a Windows-2022 image to build the .Net code.
 on:
   # Enables manual runs
@@ -32,17 +32,20 @@ jobs:
       with:
         files: app/bin/Debug/netcoreapp3.1/
         dest: verademodotnetcore.zip
-      
-    - name: Download Veracode Pipeline Scanner
+
+# Download Veracode Static Pipeline Scanner     
+    - name: Download Veracode Static Pipeline Scanner
       run: |
         curl https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip -o veracode.zip
         unzip -o veracode.zip
   
-    - name: Run Pipeline Scanner
-      continue-on-error: true
+# In this configuration, the Pipeline scanner will check against the baseline file and see if there are any new flaws compared to the baseline.  If there is, it will break the build.  If not, the build will continue.  
+    - name: Run Veracode Static Pipeline Scanner
+      #continue-on-error: true
       run: java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}" --file "verademodotnetcore.zip" -jo true -so true -bf vc-pipeline-scanner-baseline.json
 
-    - name: Upload Results.json
+# Artifact the results for later use
+    - name: Archive Results.json from Veracode Static Pipeline Scanner
       uses: actions/upload-artifact@v3.1.0
       with:
         # Artifact name
