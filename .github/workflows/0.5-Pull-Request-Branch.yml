@@ -41,12 +41,12 @@ jobs:
   
 # In this configuration, the Pipeline scanner will check against the baseline file and see if there are any new flaws compared to the baseline.  If there is, it will break the build.  If not, the build will continue.  
     - name: Run Veracode Static Pipeline Scanner
-      continue-on-error: true
+      continue-on-error: false
       run: >
        java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}"
        --file verademodotnetcore.zip
        --summary_output true
-       #--baseline_file vc-pipeline-scanner-baseline.json
+       --baseline_file vc-pipeline-scanner-baseline.json
        --project_name VeraDemo-DotNetCore
 
 # Artifact the results for later use
