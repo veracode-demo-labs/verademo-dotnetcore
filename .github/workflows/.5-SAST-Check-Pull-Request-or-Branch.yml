@@ -2,16 +2,18 @@ name: .5-SAST-Check-Pull-Request-or-Branch
 
 # This workflow will checkout the code, build the DotNet app, create an artifact from the BIN folder, and scan with the Veracode Static Pipeline Scanner.
 # For best scan results, we are using a Windows-2022 image to build the .Net code.
+
+# Controls when the action will run. 
 on:
-  # Runs on any branch except main
+  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches:
-      - '!main'
-  # Enables manual runs
+    branches: [ main, release/* ]
+  pull_request:
+    branches: [ main, develop, main, release/* ]
+
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  schedule:
-    # Runs "Every day ay 6:05" (see https://crontab.guru)
-    - cron: '5 6 * * *'
+  
 jobs:
   SAST-Check-Pull-Request-or-Branch:
     runs-on: windows-2022
