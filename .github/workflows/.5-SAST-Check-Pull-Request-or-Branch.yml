@@ -30,7 +30,7 @@ jobs:
 
 # Build the .Net applications    
     - name: Build App
-      run: dotnet build app
+      run: dotnet build app\app.csproj
 
 # ZIP up the BIN folder where the bytecode is located
     - name: Zip Application Files 
