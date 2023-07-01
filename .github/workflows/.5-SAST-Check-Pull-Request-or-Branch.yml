@@ -28,7 +28,7 @@ jobs:
 
 # Build the .Net applications    
     - name: Build App
-      run: dotnet publish app
+      run: dotnet build app
 
 # ZIP up the BIN folder where the bytecode is located
     - name: Zip Application Files 
