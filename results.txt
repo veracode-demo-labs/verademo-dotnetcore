@@ -1,0 +1,34 @@
+
+Scan Summary:
+PIPELINE_SCAN_VERSION: 23.6.0-0
+DEV-STAGE: DEVELOPMENT
+PROJECT-NAME: VeraDemo-DotNetCore
+SCAN_ID: e3305ecf-81ca-40dc-bd48-ffc3d8330818
+SCAN_STATUS: SUCCESS
+SCAN_MESSAGE: Scan successful. Results size: 165092 bytes
+====================
+Analysis Successful.
+====================
+
+==========================
+Found 2 Scannable modules.
+==========================
+app.Views.dll
+app.dll
+
+===================
+Analyzed 2 modules.
+===================
+app.Views.dll
+app.dll
+
+===================
+Analyzed 72 issues.
+===================
+*****************************************************************
+Total flaws found: 72, New flaws found: 0 as compared to baseline
+*****************************************************************
+
+==================================
+SUCCESS: No issues passed filters.
+==================================
