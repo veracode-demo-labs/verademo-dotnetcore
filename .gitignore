@@ -4,3 +4,8 @@ app/app.csproj.user
 app/Properties/launchSettings.json
 app/.vscode/launch.json
 app/.vscode/tasks.json
+
+.vscode/*
+
+# ignore things like results.json from a pipeline scan
+app/*.json  
