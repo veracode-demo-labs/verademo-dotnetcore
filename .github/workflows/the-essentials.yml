@@ -69,3 +69,43 @@ jobs:
             -appname "Verademo.NET" -createprofile false \
             -filepath verademodotnetcore.zip -version "GitHub $GITHUB_RUN_NUMBER"                
         continue-on-error: true
+
+# the above steps are the bare minimum.
+# below are some additional steps that are commonplace
+  sca-scan:
+    needs: checkout-and-package     # OK not really, but keeps things cleaner
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: do SCA scan
+        env:
+          SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
+        uses: veracode/veracode-sca@v2.1.9
+        with:
+          path: app
+          create-issues: false
+
+      - name: display SCA results
+        run: |
+          cat scaResults.txt
+
+  container-scan:
+    needs: checkout-and-package     # OK not really, but keeps things cleaner
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: do container scan
+        uses: veracode/container_iac_secrets_scanning@v1.0.0
+        with:
+          vid: ${{ secrets.VERACODE_API_ID }}
+          vkey: ${{ secrets.VERACODE_API_KEY }}
+          command: "scan" 
+          type: "directory"
+          source: "."
+          format: "table"
