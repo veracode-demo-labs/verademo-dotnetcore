@@ -1,0 +1,71 @@
+# This file contains the essential steps for getting the app packaged and scanned using Veracode's various
+# scan types.  We suggest starting with the elements in this file and fully understanding them before
+# attempting more advanced use cases, like 'Pipeline scan on a PR', or importing Issues.
+
+# The essential steps shown below are:
+#   checkout and package the app for scanning
+#   upload for a static scan
+#   run the SCA agent scan
+#   run the Container scan
+
+name: the-essentials
+
+on:
+  workflow_dispatch:
+    
+jobs:
+  checkout-and-package:
+    runs-on: windows-2022
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+    
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '3.1.x'
+    
+      - name: Build the App
+        working-directory: ./app/
+        run: dotnet publish -c Debug -p:UseAppHost=false
+
+      - name: Zip Application Files 
+        uses: vimtor/action-zip@v1
+        with:
+          files: app/bin/Debug/netcoreapp3.1/
+          dest: verademodotnetcore.zip
+
+      - name: save artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: scan-target
+          path: verademodotnetcore.zip
+
+  upload-scan:
+    needs: checkout-and-package
+    runs-on: ubuntu-latest
+    container:
+      image: veracode/api-wrapper-java:latest
+      options: --user root
+
+    steps:
+      - name: get artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: scan-target
+
+      # debugging steps can be handy...
+      - name: debug1
+        run: |
+          pwd
+          ls -l
+
+      - name: scan
+        run: |
+          java -jar /opt/veracode/api-wrapper.jar \
+            -vid ${{ secrets.VERACODE_API_ID }} -vkey ${{ secrets.VERACODE_API_KEY }} \
+            -action UploadAndScan \
+            -appname "Verademo.NET" -createprofile false \
+            -filepath verademodotnetcore.zip -version "GitHub $GITHUB_RUN_NUMBER"                
+        continue-on-error: true
