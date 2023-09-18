@@ -1,0 +1,83 @@
+#
+# This is an example of using the VeraDemo DotNetCore test application with the Veracode scanners.  
+#
+
+# A Veracode subscription is required.
+trigger:
+- none
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: Build
+    jobs:
+    - job: doBuild
+      steps:
+      - task: UseDotNet@2
+        inputs:
+          version: '3.1'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'restore'
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: 'dotnet publish -c Debug -p:UseAppHost=false'
+      - task: ArchiveFiles@2
+        inputs:
+          rootFolderOrFile: '$(Build.SourcesDirectory)\app\bin\Debug\netcoreapp3.1'
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/upload.zip'
+          replaceExistingArchive: true
+          verbose: true
+      - task: PublishBuildArtifacts@1
+        inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)/upload.zip'
+          ArtifactName: 'upload'
+
+  - stage: PolicyScan
+    jobs:
+    - job: doStaticScan
+      steps:
+      #debugging step
+      # - script: |
+      #     echo buildNumber: $(build.buildNumber)
+      #     echo binDir: $(build.binariesDirectory)
+      #     echo artDir: $(build.artifactstagingdirectory)
+      #     echo srcDir: $(build.sourcesDirectory)
+      - task: DownloadBuildArtifacts@1
+        inputs:
+          artifactName: upload
+      - task: Veracode@3
+        inputs:
+          ConnectionDetailsSelection: 'Credentials'
+          apiId: $(VERACODE_API_ID)
+          apiKey: $(VERACODE_API_KEY)
+          veracodeAppProfile: 'Verademo'
+          version: 'Azure-$(build.buildNumber)'
+          filepath: '$(build.artifactstagingdirectory)/upload/upload.zip'
+
+# the above steps are the bare minimum.
+# below are some additional steps that are commonplace
+  - stage: SCAScan
+    jobs:
+    - job: doSCAScan
+      steps:
+      - script: |
+          curl -sSL https://download.sourceclear.com/ci.sh | sh -s -- scan app
+        env: 
+          SRCCLR_API_TOKEN: $(SRCCLR_TOKEN)
+
+  - stage: ContainerScan
+    jobs:
+    - job: doContainerScan
+      steps:
+      - script: |
+          curl -fsS https://tools.veracode.com/veracode-cli/install | sh
+          ./veracode scan --type directory --source . --format table
+        env:
+          VERACODE_API_KEY_ID: $(VERACODE_API_ID)
+          VERACODE_API_KEY_SECRET: $(VERACODE_API_KEY)
+
+
