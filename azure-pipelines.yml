@@ -28,8 +28,9 @@ stages:
       #     workingDirectory: 'app'
       - task: DotNetCoreCLI@2
         inputs:
-          command: 'dotnet publish -c Debug -p:UseAppHost=false'
-          workingDirectory: 'app'
+          command: 'publish'
+          arguments: '-c Debug -p:UseAppHost=false'
+          workingDirectory: '$(Build.SourcesDirectory)/app'
       - task: ArchiveFiles@2
         inputs:
           rootFolderOrFile: '$(Build.SourcesDirectory)\app\bin\Debug\netcoreapp3.1'
