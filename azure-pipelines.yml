@@ -20,12 +20,10 @@ stages:
       - script: |
           echo srcDir: $(Build.SourcesDirectory)
           echo artDir: $(Build.ArtifactStagingDirectory)
+          echo source dir:
           dir $(Build.SourcesDirectory)
+          echo app dir:
           dir $(Build.SourcesDirectory)/app
-      # - task: DotNetCoreCLI@2
-      #   inputs:
-      #     command: 'restore'
-      #     workingDirectory: 'app'
       - task: DotNetCoreCLI@2
         inputs:
           command: 'publish'
@@ -33,7 +31,7 @@ stages:
           workingDirectory: '$(Build.SourcesDirectory)/app'
       - task: ArchiveFiles@2
         inputs:
-          rootFolderOrFile: '$(Build.SourcesDirectory)\app\bin\Debug\netcoreapp3.1'
+          rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/app/bin/Debug/netcoreapp3.1'
           includeRootFolder: false
           archiveType: 'zip'
           archiveFile: '$(Build.ArtifactStagingDirectory)/upload.zip'
