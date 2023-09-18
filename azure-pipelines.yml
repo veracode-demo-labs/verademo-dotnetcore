@@ -17,25 +17,15 @@ stages:
       - task: UseDotNet@2
         inputs:
           version: '3.1.x'
-      - script: |
-          echo srcDir: $(Build.SourcesDirectory)
-          echo artDir: $(Build.ArtifactStagingDirectory)
-          echo source dir:
-          dir $(Build.SourcesDirectory)
-          echo app dir:
-          dir $(Build.SourcesDirectory)/app
+      # debugging info:
+      # - script: |
+      #     echo srcDir: $(Build.SourcesDirectory)
+      #     echo artDir: $(Build.ArtifactStagingDirectory)
       - task: DotNetCoreCLI@2
         inputs:
           command: 'publish'
           arguments: '-c Debug -p:UseAppHost=false'
           workingDirectory: '$(Build.SourcesDirectory)/app'
-      - script: |
-          echo srcDir: $(Build.SourcesDirectory)
-          echo artDir: $(Build.ArtifactStagingDirectory)
-          echo source dir:
-          dir $(Build.SourcesDirectory)
-          echo app dir:
-          dir $(Build.SourcesDirectory)/app/bin/Debug
       - task: ArchiveFiles@2
         inputs:
           rootFolderOrFile: '$(Build.SourcesDirectory)/app/bin/Debug/netcoreapp3.1'
