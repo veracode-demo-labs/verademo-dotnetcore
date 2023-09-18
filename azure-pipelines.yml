@@ -35,10 +35,10 @@ stages:
           echo source dir:
           dir $(Build.SourcesDirectory)
           echo app dir:
-          dir $(Build.SourcesDirectory)/app
+          dir $(Build.SourcesDirectory)/app/bin/Debug
       - task: ArchiveFiles@2
         inputs:
-          rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/app/bin/Debug/netcoreapp3.1'
+          rootFolderOrFile: '$(Build.SourcesDirectory)/app/bin/Debug/netcoreapp3.1'
           includeRootFolder: false
           archiveType: 'zip'
           archiveFile: '$(Build.ArtifactStagingDirectory)/upload.zip'
