@@ -1,4 +1,4 @@
-# For Security Labs we need both the application and DB running within the same container.
+# Keep life simple by having both the application and DB running within the same container.
 # It's far easier to use the SQL Server base image and install the ASP.NET Core 3.1 SDK
 # on top than the other way around. We are using the full SDK rather than
 # aspnetcore-runtime-3.1 to enable re-compilation within the lab.
@@ -38,4 +38,4 @@ ENV NUGET_PACKAGES="/usr/share/nuget"
 RUN dotnet build
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["-c"]
+# CMD ["-c"]
