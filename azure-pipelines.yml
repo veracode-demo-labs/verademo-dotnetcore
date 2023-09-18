@@ -29,6 +29,13 @@ stages:
           command: 'publish'
           arguments: '-c Debug -p:UseAppHost=false'
           workingDirectory: '$(Build.SourcesDirectory)/app'
+      - script: |
+          echo srcDir: $(Build.SourcesDirectory)
+          echo artDir: $(Build.ArtifactStagingDirectory)
+          echo source dir:
+          dir $(Build.SourcesDirectory)
+          echo app dir:
+          dir $(Build.SourcesDirectory)/app
       - task: ArchiveFiles@2
         inputs:
           rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/app/bin/Debug/netcoreapp3.1'
