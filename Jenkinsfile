@@ -41,10 +41,10 @@ pipeline {
         }
 
         stage ('Veracode scan') {
-            // zip archive for Veracode scanning. Uses `zip` from the Pipline Utility Steps plugin
-            zip zipFile: 'upload.zip', archive: false, glob: 'app/bin/Debug/netcoreapp3.1/**'
-
             steps {
+                // zip archive for Veracode scanning. Uses `zip` from the Pipline Utility Steps plugin
+                zip zipFile: 'upload.zip', archive: false, glob: 'app/bin/Debug/netcoreapp3.1/**'
+
                 script {
                     if(isUnix() == true) {
                         env.HOST_OS = 'Unix'
