@@ -1,5 +1,9 @@
 # VeraDemo.NET - Blab-a-Gag
 
+### Notice
+
+This project is intentionally vulnerable! It contains known vulnerabilities and security errors in its code and is meant as an example project for software security scanning tools such as Veracode. Please do not report vulnerabilities in this project; the odds are they’re there on purpose :) .
+
 ## About
 
 Blab-a-Gag is a fairly simple forum type application which allows:
@@ -21,14 +25,33 @@ Blab-a-Gag is a fairly simple forum type application which allows:
 If you don't already have Docker this is a prerequisite.
 
 ```
-docker run --rm -it -p 127.0.0.1:8080:8080 antfie/verademo-dotnet
+[DEPRECATED]: docker run --rm -it -p 127.0.0.1:8080:8080 antfie/verademo-dotnet (new link pending)
 ```
 
 Navigate to: http://127.0.0.1:8080.
 
 ## Exploitation Demos
 
-See the `docs` folder.
+See the [DEMO_NOTES](DEMO_NOTES.md) file for information on using this application with the various Veracode scan types.
+
+Also see the `docs` folder for in-depth explanations of the various exploits exposed in this application.
+
+## CI System Demos
+
+There are build files for various CI systems included as part of this application.  Often there are several sample build files for each CI system, but there will always be at least an 'essentials' file that shows the basic steps to get the application packaged and scanned with Veracode's technology.
+
+Note that there are some secrets that need to get set in the build files.  These might vary a bit between CI systems, but generally:
+
+* `VERACODE_API_ID` & `VERACODE_API_KEY`: The API credentials of the Veracode user account used to run the scan.  See [here](https://docs.veracode.com/r/c_api_credentials3).
+* `SRCCLR_API_TOKEN`: The token needed for the agent-based SCA scanner.  See [here](https://docs.veracode.com/r/Integrate_Veracode_SCA_Agent_Based_Scanning_with_Your_CI_Projects).
+
+| CI System | "Essentials" File |
+|-----------|----------------|
+| GitHub   | `.github/workflows/the-essentials.yml` |
+| Azure Dev Ops| `azure-pipelines.yml` |
+| Jenkins | `Jenkinsfile` |
+| GitLab | `.gitlab-ci.yml` |
+| AWS | `AWS-CodeStar.md` (directions for configuring AWS CodeStar builds) |
 
 ## Technologies Used
 
@@ -38,14 +61,12 @@ See the `docs` folder.
 ## Development
 
 To build the container run this:
-```
-docker pull mcr.microsoft.com/mssql/server:2017-CU24-ubuntu-16.04
-docker build --no-cache -t verademo-dotnet .
-```
+
+	docker pull mcr.microsoft.com/mssql/server:2017-CU24-ubuntu-16.04
+	docker build --no-cache -t verademo-dotnet .
 
 To run the container for local development run this:
-```
-docker run --rm -it -p 127.0.0.1:8080:8080 --entrypoint bash -v "$(pwd)/app:/app" verademo-dotnet
-```
 
-You will then need to manually run the two commands within `/entrypoint.sh`. The first starts the DB in the background whereas the second compiles and runs the application. Typically a container shouldn't have multiple services but this was done for convenience.
+	docker run --rm -p 8080:8080 --name verademo verademo-dotnet
+
+Then point your browser to `http:\\localhost:8080`, register as a new user and add some feeds
