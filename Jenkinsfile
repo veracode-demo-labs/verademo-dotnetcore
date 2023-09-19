@@ -31,10 +31,10 @@ pipeline {
             steps {
                 script {
                     if(isUnix() == true) {
-                        sh 'dotnet publish -c Debug -p:UseAppHost=false'
+                        sh 'dotnet publish -c Debug -p:UseAppHost=false app/app.csproj'
                     }
                     else {
-                        bat 'dotnet publish -c Debug -p:UseAppHost=false'
+                        bat 'dotnet publish -c Debug -p:UseAppHost=false app/app.csproj'
                     }
                 }
             }
