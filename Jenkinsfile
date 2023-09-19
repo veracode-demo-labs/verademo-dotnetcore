@@ -6,7 +6,7 @@ pipeline {
     agent any
 
     environment {
-        VERACODE_APP_NAME = 'Verademo'      // App Name in the Veracode Platform
+        VERACODE_APP_NAME = 'Verademo.NET'      // App Name in the Veracode Platform
     }
 
     stages{

@@ -57,7 +57,7 @@ stages:
           ConnectionDetailsSelection: 'Credentials'
           apiId: $(VERACODE_API_ID)
           apiKey: $(VERACODE_API_KEY)
-          veracodeAppProfile: 'Verademo'
+          veracodeAppProfile: 'Verademo.NET'
           version: 'Azure-$(build.buildNumber)'
           filepath: '$(build.artifactstagingdirectory)/upload/upload.zip'
 
