@@ -14,12 +14,13 @@ phases:
       - cd app
       - dotnet publish -c Debug -p:UseAppHost=false
   post_build:
+    # directory/folder location is preserved from above step
     commands:
       - echo Entered the post_build phase...
       - echo Build completed on $(date)
       - pwd
       - ls
-      - tar -C app/bin/Debug/ -zcvf upload.tar.gz netcoreapp3.1/
+      - tar -C bin/Debug/ -zcvf upload.tar.gz netcoreapp3.1/
 
 artifacts:
   files:
