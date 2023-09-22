@@ -1,0 +1,26 @@
+# AWS CodeBuild buildspec file
+
+version: 0.2
+
+phases:
+  install:
+    # https://docs.aws.amazon.com/codebuild/latest/userguide/runtime-versions.html
+    runtime-versions:
+      dotnet: 3.1
+  build:
+    commands:
+      - echo Entered the build phase...
+      - echo Build started on $(date)
+      - cd app
+      - dotnet publish -c Debug -p:UseAppHost=false
+  post_build:
+    commands:
+      - echo Entered the post_build phase...
+      - echo Build completed on $(date)
+      - pwd
+      - ls
+      - tar -C app/bin/Debug/ -zcvf upload.tar.gz netcoreapp3.1/
+
+artifacts:
+  files:
+    - upload.tar.gz
