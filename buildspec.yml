@@ -24,4 +24,5 @@ phases:
 
 artifacts:
   files:
-    - upload.tar.gz
+    - app/upload.tar.gz
+  discard-paths: yes
