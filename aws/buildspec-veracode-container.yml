@@ -1,0 +1,7 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - curl -fsS https://tools.veracode.com/veracode-cli/install | sh
+      - ./veracode scan --type directory --source . --format table

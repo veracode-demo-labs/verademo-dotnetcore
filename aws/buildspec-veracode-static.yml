@@ -1,0 +1,6 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+       - java -jar /opt/veracode/api-wrapper.jar -action uploadandscan -vid $VERACODE_API_ID -vkey $VERACODE_API_KEY -appname Verademo.NET -createprofile false -version "AWS-$(date +%Y-%m-%d-%H:%M)" -filepath upload.tar.gz

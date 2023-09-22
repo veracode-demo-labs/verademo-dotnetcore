@@ -1,0 +1,6 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - curl -sSL https://download.sourceclear.com/ci.sh | sh -s -- scan app
