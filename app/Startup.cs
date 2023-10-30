@@ -15,64 +15,77 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using log4net.Config;
+using System.IO;
+
+using log4net.Repository;
+using System.Reflection;
+using log4net;
 
 namespace Verademo
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+	public class Startup
+	{
+		public Startup(IConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
 
-        public IConfiguration Configuration { get; }
+		public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllersWithViews();
-            services.AddRazorPages();
+		public void ConfigureServices(IServiceCollection services)
+		{
+			services.AddControllersWithViews();
+			services.AddRazorPages();
 
-            services.AddSession(options => {
-                options.Cookie.HttpOnly = false;
+			services.AddSession(options =>
+			{
+				options.Cookie.HttpOnly = false;
 
-                if (Environment.GetEnvironmentVariable("CONNECTION_FROM_HTTPS") == "1") {
-                    options.Cookie.SameSite = SameSiteMode.None;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                }
-            });
+				if (Environment.GetEnvironmentVariable("CONNECTION_FROM_HTTPS") == "1")
+				{
+					options.Cookie.SameSite = SameSiteMode.None;
+					options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+				}
+			});
 
-            services.AddAntiforgery(options => {
-                options.Cookie.HttpOnly = false;
+			services.AddAntiforgery(options =>
+			{
+				options.Cookie.HttpOnly = false;
 
-                if (Environment.GetEnvironmentVariable("CONNECTION_FROM_HTTPS") == "1") {
-                    options.Cookie.SameSite = SameSiteMode.None;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-                }
-            });
-        }
+				if (Environment.GetEnvironmentVariable("CONNECTION_FROM_HTTPS") == "1")
+				{
+					options.Cookie.SameSite = SameSiteMode.None;
+					options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+				}
+			});
+		}
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
-        {
-            loggerFactory.AddLog4Net();
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+		{
+			ILoggerRepository loggerRepository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+			XmlConfigurator.Configure(loggerRepository, new FileInfo("log4net.config"));
+			//loggerFactory.AddLog4Net("log4net.config");
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions {
-                ForwardLimit = 2,
-                ForwardedHeaders = ForwardedHeaders.All
-            });
+			app.UseForwardedHeaders(new ForwardedHeadersOptions
+			{
+				ForwardLimit = 2,
+				ForwardedHeaders = ForwardedHeaders.All
+			});
 
-            app.UseDeveloperExceptionPage();
-            app.UseDatabaseErrorPage();
-            app.UseStaticFiles();
-            app.UseRouting();
-            app.UseSession();
+			app.UseDeveloperExceptionPage();
+			app.UseDatabaseErrorPage();
+			app.UseStaticFiles();
+			app.UseRouting();
+			app.UseSession();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Account}/{action=Login}");
-                endpoints.MapRazorPages();
-            });
-        }
-    }
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllerRoute(
+					name: "default",
+					pattern: "{controller=Account}/{action=Login}");
+				endpoints.MapRazorPages();
+			});
+		}
+	}
 }
