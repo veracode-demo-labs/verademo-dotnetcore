@@ -1,0 +1,49 @@
+# build the docker image and push it to the official veracode repo
+
+name: push-veracode-docker-image
+
+on:
+  workflow_dispatch:
+    
+jobs:     
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+    
+      - name: setup environment
+        run: |
+          VER=$(cat ./VERSION)
+          echo version: $VER
+          echo "VERSION=$VER" >> $GITHUB_ENV
+
+      # - name: verify env
+      #   run: |
+      #     echo GitHub env: ${{ env.VERSION }}
+
+      - name: check-latest-version
+        uses: addnab/docker-run-action@v3
+        with:
+          image: docker:stable-dind
+          run: |
+            echo checking for version: ${{ env.VERSION }}
+            export DOCKER_CLI_EXPERIMENTAL=enabled
+            docker manifest inspect veracode/vulnerable-verademo-dotnet:${{ env.VERSION }} > /dev/null 2>&1
+            exit_code=$?
+            if [ $exit_code -eq 0 ]; then echo Image already exists, did you forget to bump the VERSION file?; exit 1; else echo free to push new image; exit 0; fi
+
+      - name: login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_VERA_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_VERA_PASSWORD }}
+
+      - name: Build-Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: |
+            veracode/vulnerable-verademo-dotnet:${{ env.VERSION }}
+            veracode/vulnerable-verademo-dotnet:latest
