@@ -23,13 +23,17 @@ Blab-a-Gag is a fairly simple forum type application which allows:
  
 ## Run
 
-If you don't already have Docker this is a prerequisite.
+Download and run the image with:
 
 	docker run -p 8080:8080 veracode/vulnerable-verademo-dotnet
 
-Navigate to: `http://127.0.0.1:8080`, register as a new user, login, add some feeds and blabs.
+Navigate to: `http://127.0.0.1:8080`, register as a new user, login, add some feeds and balbs.
 
-## Exploitation Demos
+## Other Notes
+
+The source for this image is hosted [here](https://github.com/veracode-demo-labs/verademo-dotnet), and within that repo are additional files that will cover both how to exploit this application and how to build this application for various CI systems.
+
+### Exploitation Demos
 
 See the [DEMO_NOTES](DEMO_NOTES.md) file for information on using this application with the various Veracode scan types.
 
@@ -68,4 +72,4 @@ To run the container for local development run this:
 
 	docker run --rm -p 8080:8080 --name verademo verademo-dotnet
 
-Then point your browser to `http:\\localhost:8080`, register as a new user and add some feeds
+Then point your browser to `http:\\localhost:8080`, register as a new user and add some feeds.

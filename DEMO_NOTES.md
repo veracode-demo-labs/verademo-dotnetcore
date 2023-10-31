@@ -10,8 +10,9 @@ Build the app:
 
 	cd app
 	dotnet publish -c Debug -p:UseAppHost=false
-	zip and upload the bin/Debug/netcoreapp3.1 folder
-
+	cd bin/Debug
+	zip -r netcoreapp3.1.zip netcoreapp3.1
+	
 The `netcoreapp3.1.zip` file is the file to upload for scanning.  Either upload this file to the Veracode platform for a Policy/Sandbox scan, or use it with the Veracode Pipeline scan.
 
 ## SCA scanning
@@ -26,7 +27,7 @@ Use either the command-line version of the SCA agent (follow the install and con
 
 ### Vulnerable Methods
 
-The Veracode agent-based SCA scan can also find [vulnerable methods](https://docs.veracode.com/r/Finding_and_Fixing_Vulnerabilities#fixing-vulnerable-methods).  In this app, there is a vulnerable version of the log4net library called from Veracode.Startup.Configure().
+The Veracode agent-based SCA scan can also find [vulnerable methods](https://docs.veracode.com/r/Finding_and_Fixing_Vulnerabilities#fixing-vulnerable-methods).  In this app, there is a vulnerable version of the log4net library called from `Veracode.Startup.Configure()`.
 
 ### SBOM generation
 
@@ -58,7 +59,7 @@ This application has flaws that can be fixed with [Veracode Fix](https://docs.ve
 
 	veracode fix Controllers/ToolsController.cs
 	
-The first flaw is a CRLF Injection around line 53 that can be Fixed.
+There is a CRLF Injection around line 53 that can be Fixed.
 
 To verify the fix re-build the app and re-run the Pipeline scanner. 
 
