@@ -24,21 +24,21 @@ jobs:
 
 # Build the .Net applications    
     - name: Build App
-      run: dotnet build app
+      run: dotnet publish app -o ./publish
 
 # ZIP up the BIN folder where the Bytecode is located
     - name: Zip Application Files 
       uses: vimtor/action-zip@v1
       with:
-        files: app/bin/Debug/netcoreapp3.1/
-        dest: verademodotnetcore.zip
+        files: publish/
+        dest: ./publish.zip
 
 # Upload ZIP artifact for other worfklows    
     - name: Upload Application Build Artifact
       uses: actions/upload-artifact@v3.1.0
       with:
         name: VeraDemoDotNetCoreAppArtifact
-        path: app/bin/Debug/netcoreapp3.1/
+        path: publish.zip
         
 # Artifact the Veracode DAST config to use in a following workflow
     - name: Upload DAST Config for Later Use
