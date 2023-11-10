@@ -30,7 +30,7 @@ jobs:
 
 # Build the .Net application    
     - name: Build App
-      run: dotnet publish app -o ./publish
+      run: dotnet publish app/app.csproj -o ./publish
 
 # ZIP up the BIN folder where the Bytecode is located
     - name: Zip Application Files 
@@ -52,8 +52,9 @@ jobs:
        java -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}"
        --file publish.zip
        --summary_output true
-       # --baseline_file vc-pipeline-scanner-baseline.json
        --project_name VeraDemo-DotNetCore
+       --fail_on_cwe 463
+       --emit_stack_dump true
 
 # Artifact the results for later use
     - name: Archive Results.json & Results.txt from Veracode Static Pipeline Scanner
