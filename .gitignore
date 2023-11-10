@@ -9,3 +9,5 @@ app/.vscode/tasks.json
 
 # ignore things like results.json from a pipeline scan
 app/*.json  
+/publish
+/publish.zip
