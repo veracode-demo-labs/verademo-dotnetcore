@@ -53,8 +53,7 @@ jobs:
        --file publish.zip
        --summary_output true
        --project_name VeraDemo-DotNetCore
-       --fail_on_cwe 463
-       --emit_stack_dump true
+       --baseline_file results.json
 
 # Artifact the results for later use
     - name: Archive Results.json & Results.txt from Veracode Static Pipeline Scanner
