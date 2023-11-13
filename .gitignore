@@ -11,3 +11,4 @@ app/.vscode/tasks.json
 app/*.json  
 /publish
 /publish.zip
+.vs
