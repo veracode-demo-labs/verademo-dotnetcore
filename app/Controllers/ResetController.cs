@@ -219,11 +219,19 @@ namespace Verademo.Controllers
             return blabsContent;
         }
 
+        public int getSecureRandom()
+        {
+                using (var secureRandom = System.Security.Cryptography.RandomNumberGenerator.Create());
+                {
+                    byte[] randomNumberBuffer = new byte[4];
+                    secureRandom.GetNonZeroBytes(randomNumberBuffer);
+                    return BitConverter.ToInt32(randomNumberBuffer, 0);
+                }
+        }
         private void AddComments(DbConnection connect, string[] blabsContent)
         {
             logger.Info("Reading comments from file");
             
-            var rand = new Random();
             
             var scriptPath = Path.Combine(_environment.ContentRootPath, "Resources/scripts/comments.txt");
             var commentsContent = System.IO.File.ReadAllLines(scriptPath);
@@ -231,12 +239,11 @@ namespace Verademo.Controllers
             // Add the comments
             logger.Info("Preparing the Statement for adding comments");
 
-            using (var tr = connect.BeginTransaction())
             {
                 for (var i = 1; i <= blabsContent.Length; i++)
                 {
                     // Add a random number of comment
-                    var count = rand.Next(6); // (between 0 and 6)
+                    var count = getSecureRandom(); // (between 0 and 6)
 
                     for (var j = 0; j < count; j++)
                     {
