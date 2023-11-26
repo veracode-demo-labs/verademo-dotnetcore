@@ -1,12 +1,6 @@
 {
   "name": "VeraDemo-DotNetCore-GitHub",
   "scan_setting": {
-    "custom_hosts": [
-      {
-        "host_name": "verademo-dotnetcore-github.qa",
-        "ip_address": "98.212.110.137"
-      }
-    ],
     "max_browsers": 10
   },
   "scanner_variables": [
@@ -20,7 +14,7 @@
     {
       "scan_config_request": {
         "target_url": {
-          "url": "http://verademo-dotnetcore-github.qa:8081"
+          "url": "https://verademo-dotnetcore.veracode.cloud"
         }
       }
     }

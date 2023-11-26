@@ -44,43 +44,7 @@ jobs:
         vkey: '${{ secrets.VERACODE_API_KEY }}'
       continue-on-error: true
 
-# Synch Issues into GitHub Issues.  This will synch the issues from the most recent completed SAST Policy scan.
-# This is fine for most, see more advanced workflow to get more instant feedback if needed.
-  Synch-Issues-to-GitHub:
-    runs-on: ubuntu-latest
-    container: 
-      image: veracode/api-signing:latest
-    steps:
-      - name: Get SAST Policy flaws
-        run: |
-          cd /tmp
-          export VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_ID }}
-          export VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY }}
-          guid=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v1/applications?name=VeraDemo-DotNetCore-GitHub" | jq -r '._embedded.applications[0].guid') 
-          echo GUID: ${guid}
-          
-          # Report on SAST flaws which violate policy
-          total_flaws=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True" | jq -r '.page.total_elements')
-          echo TOTAL_FLAWS: ${total_flaws}
-          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=STATIC&violates_policy=True&size=${total_flaws}" > policy_flaws.json
-          
-          # Report on DAST vulnerabilities which violate policy
-          total_vulns=$(http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=DYNAMIC&violates_policy=True" | jq -r '.page.total_elements')
-          echo TOTAL_VULNS: ${total_vulns}
-          http --auth-type veracode_hmac GET "https://api.veracode.com/appsec/v2/applications/${guid}/findings?scan_type=DYNAMIC&violates_policy=True&size=${total_vulns}" > policy_vulns.json
-
-      - name: Synch SAST flaws to GitHub Issues
-        uses: veracode/veracode-flaws-to-issues@v1
-        with:
-          scan-results-json: '/tmp/policy_flaws.json'
-          github-token: ${{ secrets.GH_TOKEN }} 
-    
-      - name: Synch DAST vulnerabilities GitHub Issues
-        uses: veracode/veracode-flaws-to-issues@v1
-        with:
-          scan-results-json: '/tmp/policy_vulns.json'
-          github-token: ${{ secrets.GH_TOKEN }} 
-          
+  # Veracode CLI against the container       
   Container-Inspection-SBOM:
     runs-on: ubuntu-latest
     steps:
@@ -94,6 +58,7 @@ jobs:
           ls -la
           ./veracode scan --source /home/runner/work/verademo-dotnetcore/verademo-dotnetcore --type directory --format table -o IssuesSource.txt
           ./veracode sbom --source veracodedemolabs/verademo-dotnetcore-github:latest --type image --format table -o SBOM.txt
+
 # Store security artifacts
       - name: Upload security artifacts
         uses: actions/upload-artifact@v3.1.0
@@ -101,6 +66,7 @@ jobs:
           name: SecurityArtifacts
           path: ./tmp/*.txt     
 
+# Running SCA Agent against Repo          
   SCA-Agent-Scan-Resuls-Import:
     runs-on: ubuntu-latest
     steps:
@@ -125,11 +91,6 @@ jobs:
         # Run the SRCCLR with the `--allow-dirty` option
           allow-dirty: true 
 
-      - name: SCA Agent Container Scan
-        env: 
-          SRCCLR_API_TOKEN: ${{ secrets.SRCCLR_API_TOKEN }}
-        run: curl -sSL https://download.sourceclear.com/ci.sh | sh -s scan --image veracodedemolabs/verademo-dotnetcore-github:latest --json=SCA-Container-Results-${{ github.run_id }}.json
-      
       - name: Upload artifact with SCA app and container issues for this build
         uses: actions/upload-artifact@v3.1.1
         with:
