@@ -73,13 +73,12 @@ jobs:
 
 # DAST Essentials scan submission
 
-  crashtest_security_scan:
+  DAST_Essentials_scan:
     runs-on: ubuntu-latest
-    name: Run Crashtest Security Scan
+    name: DAST Essentials Scan
     steps:
-    - name: Crashtest Security Action Step
-      id: CrashtestSecurity 
+    - name: Veracode Action Step
+      id: Veracode 
       uses: crashtest-security/crashtest-security-action@v1.0.0
       with:
-        crashtest-webhook: '${{ secrets.CRASHTEST_WEBHOOK }}'
-        pull-report: 'false'
+       VERACODE_WEBHOOK: '${{ secrets.CRASHTEST_WEBHOOK }}'
