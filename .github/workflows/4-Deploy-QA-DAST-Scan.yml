@@ -70,6 +70,19 @@ jobs:
           VERACODE_API_KEY_ID: ${{ secrets.VERACODE_API_ID }}
           VERACODE_API_KEY_SECRET: ${{ secrets.VERACODE_API_KEY }}
         run: http --auth-type=veracode_hmac --print=Hh POST "https://api.veracode.com/was/configservice/v1/analyses" < /tmp/vc-dast-config.json
+  
+  
+  # DAST Essentials scan submission
+  crashtest_security_scan:
+    runs-on: ubuntu-latest
+    name: Run Crashtest Security Scan
+    steps:
+    - name: Crashtest Security Action Step
+      id: CrashtestSecurity 
+      uses: crashtest-security/crashtest-security-action@v1.0.0
+      with:
+        crashtest-webhook: '${{ secrets.CRASHTEST_WEBHOOK }}'
+        pull-report: 'false'
 
 # DAST Essentials scan submission
 
