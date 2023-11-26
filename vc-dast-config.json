@@ -14,7 +14,7 @@
     {
       "scan_config_request": {
         "target_url": {
-          "url": "https://verademo-dotnetcore.veracode.cloud"
+          "url": "https://verademo-dotnetcore.vc-labs.cloud"
         }
       }
     }
